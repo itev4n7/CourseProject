@@ -10,7 +10,7 @@ public class MailTest extends BaseTest {
     public void testMail() {
         app.login.login(validUser);
         app.menuBarr.goToSendMail();
-        app.sendMail.sendMail(validMail);
+        app.sendMail.sendLetter(validMail);
         app.menuBarr.goToCheckMail();
         app.checkMail.openNewMail();
         assertEquals(app.mail.mailFrom(), validMail.to);

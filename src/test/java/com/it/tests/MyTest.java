@@ -10,6 +10,5 @@ public class MyTest extends BaseTest {
         System.out.println(UserFactory.getRandomUsers(10));
         app.login.login(validUser);
         Assert.assertEquals(app.dashboard.getLbUserEmail(), validUser.email);
-
     }
 }
