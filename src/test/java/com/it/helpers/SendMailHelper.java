@@ -12,9 +12,6 @@ public class SendMailHelper extends SendMailPage {
     }
 
     public void sendLetter(Mail mail) {
-        fillTo(mail.to);
-        fillSubject(mail.subject);
-        fillText(mail.text);
-        clickSend();
+        sendLetter(mail.to, mail.subject, mail.text);
     }
 }
