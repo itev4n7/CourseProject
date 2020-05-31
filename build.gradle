@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.8.1'
 }
 
 group 'org.example'
@@ -9,9 +10,25 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    allureVersion = '2.13.2'
+}
+
 dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '7.1.0'
     compile group: 'org.seleniumhq.selenium', name: 'selenium-server', version: '3.141.59'
+    compile group: 'commons-io', name: 'commons-io', version: '2.7'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+}
+
+allure {
+    autoconfigure = true
+    version = "${allureVersion}"
+
+    useTestNG {
+        version = "${allureVersion}"
+
+    }
 }
 
 //tasks.register("chrome",Test.class).configure{
@@ -28,11 +45,11 @@ task chrome(type: Test) {
         suites "src/test/resources/testNg.xml"
     }
 }
+
 task fireFox(type: Test) {
     systemProperty("driver", "fireFox")
     useTestNG {
         suites "src/test/resources/testNg.xml"
     }
-
 }
 

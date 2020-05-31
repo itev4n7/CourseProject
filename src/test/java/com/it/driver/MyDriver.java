@@ -1,8 +1,17 @@
 package com.it.driver;
 
+import io.qameta.allure.Allure;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -10,9 +19,10 @@ import java.util.concurrent.TimeUnit;
 import static com.it.common.Constants.BASE_WAIT;
 
 public class MyDriver implements WebDriver {
-    private static MyDriver myDriver;
     private final WebDriver driver;
+    private static MyDriver myDriver;
     public WebDriverWait wait;
+    private static int count;
 
     private MyDriver() {
         driver = DriverFactory.getDriver();
@@ -48,6 +58,21 @@ public class MyDriver implements WebDriver {
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight)");
     }
 
+    public void takeSnapShot() {
+        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        try {
+            FileUtils.copyFile(screenshot, new File("build/screenshot/screen" + count + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path content = Paths.get("build/screenshot/screen" + count + ".png");
+        try (InputStream is = Files.newInputStream(content)) {
+            Allure.addAttachment("My attachment", is);
+        } catch (IOException ignore) {
+        }
+        count++;
+    }
+
     @Override
     public void get(String url) {
         driver.get(url);
@@ -65,12 +90,14 @@ public class MyDriver implements WebDriver {
 
     @Override
     public List<WebElement> findElements(By by) {
-        return driver.findElements(by);
+        List<WebElement> webElements = new ArrayList<>();
+        driver.findElements(by).forEach(s -> webElements.add(new WrappedWebElement(s)));
+        return webElements;
     }
 
     @Override
     public WebElement findElement(By by) {
-        return driver.findElement(by);
+        return new WrappedWebElement(driver.findElement(by));
     }
 
     @Override
