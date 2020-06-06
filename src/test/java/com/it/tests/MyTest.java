@@ -1,5 +1,6 @@
 package com.it.tests;
 
+import io.qameta.allure.Step;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
